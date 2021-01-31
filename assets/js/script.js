@@ -20,4 +20,37 @@ $(window).on("load", function() {
 
     });
 
+    $(".saveBtn").on("click", function() {
+
+        var hour = $(this).prev().prev().attr("data-hour");
+        var input = $(this).prev().val().trim();
+        var task = events.find((t) => t.time === hour);
+
+        if (input === "") {
+            if (task) {
+                events = events.filter((t) => t.time !== hour);
+                localStorage.setItem("taskObject", JSON.stringify(events));
+            }
+            return;
+        }
+
+        if (task) {
+            task.description = input;
+        } else {
+            var newTask = {
+                "time": hour,
+                "description": input
+            };
+
+            events.push(newTask);
+        }
+
+        localStorage.setItem("taskObject", JSON.stringify(events));
+    });
+
+    events.forEach(task => {
+
+        $("div[data-hour=" + task.time +"]").next().val(task.description);
+    });
+
 });
